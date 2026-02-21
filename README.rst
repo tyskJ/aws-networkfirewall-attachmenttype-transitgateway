@@ -57,20 +57,7 @@ AWS Network Firewall が Transit Gateway にネイティブ統合されたので
 ---------------------------------------------------------------------
 .. code-block:: zsh
 
-    cdk bootstrap \
-    --toolkit-stack-name CustomCDKToolkit \
-    --bootstrap-bucket-name cdk-bootstrap-bucket \
-    --tags CdkToolKit=true \
-    --profile admin
-
-.. note::
-
-    * オプションは任意のためなくても問題ないです
-
-.. note::
-
-    * バケット名は、全世界で一意である必要があります
-    * 作成に失敗した場合は、バケット名を修正してください
+    cdk bootstrap --profile admin
 
 実作業 - ローカル -
 =====================================================================
