@@ -32,7 +32,7 @@ AWS Network Firewall が Transit Gateway にネイティブ統合されたので
 前提条件
 =====================================================================
 * *AdministratorAccess* がアタッチされているIAMユーザーを作成していること
-* 実作業は *envs* フォルダ配下で実施すること
+* 実作業は *app* フォルダ配下で実施すること
 * 以下コマンドを実行し、*admin* プロファイルを作成していること (デフォルトリージョンは *ap-northeast-1* )
 
 .. code-block:: zsh
@@ -57,7 +57,20 @@ AWS Network Firewall が Transit Gateway にネイティブ統合されたので
 ---------------------------------------------------------------------
 .. code-block:: zsh
 
-    cdk bootstrap --profile admin
+    cdk bootstrap \
+    --toolkit-stack-name CustomCDKToolkit \
+    --bootstrap-bucket-name cdk-bootstrap-bucket \
+    --tags CdkToolKit=true \
+    --profile admin
+
+.. note::
+
+    * オプションは任意のためなくても問題ないです
+
+.. note::
+
+    * バケット名は、全世界で一意である必要があります
+    * 作成に失敗した場合は、バケット名を修正してください
 
 実作業 - ローカル -
 =====================================================================
