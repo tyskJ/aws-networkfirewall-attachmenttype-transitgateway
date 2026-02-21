@@ -45,9 +45,13 @@ export interface Parameter extends cdk.StackProps {
 ╚═════════════════════════════════════════════════════════════════════════╝
 */
 export const devParameter: Parameter = {
-  /* Env */
+  /***************
+  Env 
+  ***************/
   envName: "prd",
-  /* NGW VPC */
+  /***************
+  NGW VPC 
+  ***************/
   ngwVpc: {
     id: "NgwVpc",
     cidrBlock: "10.0.0.0/16",
@@ -88,7 +92,9 @@ export const devParameter: Parameter = {
       ],
     },
   ],
-  /* CloudShell VPC */
+  /***************
+  CloudShell VPC 
+  ***************/
   cloudshellVpc: {
     id: "CloudshellVpc",
     cidrBlock: "172.16.0.0/16",
