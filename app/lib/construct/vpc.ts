@@ -41,12 +41,54 @@ export class Network extends Construct {
     for (const tag of props.ngwVpc.tags) {
       cdk.Tags.of(this.ngwVpc).add(tag.key, tag.value);
     }
+    /**************
+    NGW Subnet
+    **************/
     this.ngwSubnets = this.createSubnet(
       this,
       props.pseudo,
       this.ngwVpc,
       props.ngwSubnets,
     );
+    /**************
+    Internet Gateway
+    **************/
+    const igw = new ec2.CfnInternetGateway(this, "Igw", {
+      tags: [
+        {
+          key: "Name",
+          value: "igw",
+        },
+      ],
+    });
+    const igwAttach = new ec2.CfnVPCGatewayAttachment(this, "IgwAttach", {
+      vpcId: this.ngwVpc.attrVpcId,
+      internetGatewayId: igw.attrInternetGatewayId,
+    });
+    /**************
+    NAT Gateway
+    **************/
+    const eip = new ec2.CfnEIP(this, "Eip", {
+      tags: [
+        {
+          key: "Name",
+          value: "ngw-eip-a",
+        },
+      ],
+    });
+    const ngwAzA = new ec2.CfnNatGateway(this, "NgwAzA", {
+      subnetId: this.ngwSubnets["public-a"].attrSubnetId,
+      allocationId: eip.attrAllocationId,
+      availabilityMode: "zonal",
+      connectivityType: "public",
+      tags: [
+        {
+          key: "Name",
+          value: "ngw-az-a",
+        },
+      ],
+    });
+    ngwAzA.addDependency(igwAttach);
     /**************
     CloudShell VPC
     **************/
