@@ -1,16 +1,26 @@
-import * as cdk from 'aws-cdk-lib/core';
-import { Construct } from 'constructs';
-// import * as sqs from 'aws-cdk-lib/aws-sqs';
+import * as cdk from "aws-cdk-lib/core";
+import { Construct } from "constructs";
+import { Parameter } from "../../parameter";
+import { Network } from "../construct/vpc";
 
 export class AppStack extends cdk.Stack {
-  constructor(scope: Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: Construct, id: string, props: Parameter) {
     super(scope, id, props);
 
-    // The code that defines your stack goes here
+    /*****************
+    Pseudo
+    *****************/
+    const pseudo = new cdk.ScopedAws(this);
 
-    // example resource
-    // const queue = new sqs.Queue(this, 'AppQueue', {
-    //   visibilityTimeout: cdk.Duration.seconds(300)
-    // });
+    /*****************
+    VPC
+    *****************/
+    const nw = new Network(this, "Nw", {
+      pseudo: pseudo,
+      ngwVpc: props.ngwVpc,
+      ngwSubnets: props.ngwSubnets,
+      cloudshellVpc: props.cloudshellVpc,
+      cloudshellSubnets: props.cloudshellSubnets,
+    });
   }
 }
