@@ -26,6 +26,8 @@ export class Network extends Construct {
   public readonly ngwSubnets: Record<subnetKey, ec2.CfnSubnet>;
   public readonly cloudshellVpc: ec2.CfnVPC;
   public readonly cloudshellSubnets: Record<subnetKey, ec2.CfnSubnet>;
+  public readonly ngwPublicSubnetRtb: ec2.CfnRouteTable;
+  public readonly cloudshellPrivateSubnetRtb: ec2.CfnRouteTable;
 
   constructor(scope: Construct, id: string, props: VpcProps) {
     super(scope, id);
@@ -77,7 +79,7 @@ export class Network extends Construct {
       ],
     });
     const ngwAzA = new ec2.CfnNatGateway(this, "NgwAzA", {
-      subnetId: this.ngwSubnets["public-a"].attrSubnetId,
+      subnetId: this.ngwSubnets["public-ngw-a"].attrSubnetId,
       allocationId: eip.attrAllocationId,
       availabilityMode: "zonal",
       connectivityType: "public",
@@ -90,6 +92,58 @@ export class Network extends Construct {
     });
     ngwAzA.addDependency(igwAttach);
     /**************
+    RouteTable
+    **************/
+    this.ngwPublicSubnetRtb = new ec2.CfnRouteTable(
+      this,
+      "NgwPublicNgwSubnetRtb",
+      {
+        vpcId: this.ngwVpc.attrVpcId,
+        tags: [
+          {
+            key: "Name",
+            value: "ngwvpc-public-ngw-subnet-rtb",
+          },
+        ],
+      },
+    );
+    new ec2.CfnRoute(this, "ToIgw", {
+      routeTableId: this.ngwPublicSubnetRtb.attrRouteTableId,
+      destinationCidrBlock: "0.0.0.0/0",
+      gatewayId: igw.attrInternetGatewayId,
+    });
+    new ec2.CfnSubnetRouteTableAssociation(this, "NgwPublicNgwSubnetRtbAssoc", {
+      routeTableId: this.ngwPublicSubnetRtb.attrRouteTableId,
+      subnetId: this.ngwSubnets["public-ngw-a"].attrSubnetId,
+    });
+    const ngwPrivateTgwSubnetRtb = new ec2.CfnRouteTable(
+      this,
+      "NgwPrivateTgwSubnetRtb",
+      {
+        vpcId: this.ngwVpc.attrVpcId,
+        tags: [
+          {
+            key: "Name",
+            value: "ngwvpc-private-tgw-subnet-rtb",
+          },
+        ],
+      },
+    );
+    new ec2.CfnRoute(this, "ToNgw", {
+      routeTableId: ngwPrivateTgwSubnetRtb.attrRouteTableId,
+      destinationCidrBlock: "0.0.0.0/0",
+      natGatewayId: ngwAzA.attrNatGatewayId,
+    });
+    new ec2.CfnSubnetRouteTableAssociation(
+      this,
+      "NgwPrivateTgwSubnetRtbAssoc",
+      {
+        routeTableId: ngwPrivateTgwSubnetRtb.attrRouteTableId,
+        subnetId: this.ngwSubnets["private-tgw-a"].attrSubnetId,
+      },
+    );
+
+    /**************
     CloudShell VPC
     **************/
     this.cloudshellVpc = new ec2.CfnVPC(this, props.cloudshellVpc.id, {
@@ -100,11 +154,59 @@ export class Network extends Construct {
     for (const tag of props.cloudshellVpc.tags) {
       cdk.Tags.of(this.cloudshellVpc).add(tag.key, tag.value);
     }
+    /**************
+    CloudShell Subnet
+    **************/
     this.cloudshellSubnets = this.createSubnet(
       this,
       props.pseudo,
       this.cloudshellVpc,
       props.cloudshellSubnets,
+    );
+    /**************
+    RouteTable
+    **************/
+    this.cloudshellPrivateSubnetRtb = new ec2.CfnRouteTable(
+      this,
+      "CloudShellPrivateSubnetRtb",
+      {
+        vpcId: this.cloudshellVpc.attrVpcId,
+        tags: [
+          {
+            key: "Name",
+            value: "cloudshellvpc-private-subnet-rtb",
+          },
+        ],
+      },
+    );
+    new ec2.CfnSubnetRouteTableAssociation(
+      this,
+      "CloudShellPrivateSubnetRtbAssoc",
+      {
+        routeTableId: this.cloudshellPrivateSubnetRtb.attrRouteTableId,
+        subnetId: this.cloudshellSubnets["private-cloudshell-a"],
+      },
+    );
+    const cloudshellPrivateTgwSubnetRtb = new ec2.CfnRouteTable(
+      this,
+      "CloudSHellPrivateTgwSubnetRtb",
+      {
+        vpcId: this.cloudshellVpc.attrVpcId,
+        tags: [
+          {
+            key: "Name",
+            value: "cloudshellvpc-private-tgw-subnet-rtb",
+          },
+        ],
+      },
+    );
+    new ec2.CfnSubnetRouteTableAssociation(
+      this,
+      "CloudShellPrivateTgwSubnetRtbAssoc",
+      {
+        routeTableId: cloudshellPrivateTgwSubnetRtb.attrRouteTableId,
+        subnetId: this.cloudshellSubnets["private-tgw-a"].attrSubnetId,
+      },
     );
   }
   /*
