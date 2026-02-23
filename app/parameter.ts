@@ -82,7 +82,7 @@ export const devParameter: Parameter = {
       id: "NgwVpcPrivateTgwSubnetA",
       key: "private-a",
       availabilityZone: "a",
-      cidrBlock: "10.0.2.0/24",
+      cidrBlock: "10.0.255.240/28",
       mapPublicIpOnLaunch: false,
       tags: [
         {
@@ -125,7 +125,7 @@ export const devParameter: Parameter = {
       id: "CloudshellVpcPrivateTgwSubnetA",
       key: "private-a",
       availabilityZone: "a",
-      cidrBlock: "172.16.2.0/24",
+      cidrBlock: "172.16.255.240/28",
       mapPublicIpOnLaunch: false,
       tags: [
         {
