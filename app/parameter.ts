@@ -15,7 +15,10 @@ export type vpcInfo = {
 
 export type azInfo = "a" | "c" | "d";
 
-export type subnetKey = "public-a" | "private-a";
+export type subnetKey =
+  | "public-ngw-a"
+  | "private-tgw-a"
+  | "private-cloudshell-a";
 
 export type subnetInfo = {
   id: string;
@@ -67,7 +70,7 @@ export const devParameter: Parameter = {
   ngwSubnets: [
     {
       id: "NgwVpcPublicNgwSubnetA",
-      key: "public-a",
+      key: "public-ngw-a",
       availabilityZone: "a",
       cidrBlock: "10.0.1.0/24",
       mapPublicIpOnLaunch: true,
@@ -80,7 +83,7 @@ export const devParameter: Parameter = {
     },
     {
       id: "NgwVpcPrivateTgwSubnetA",
-      key: "private-a",
+      key: "private-tgw-a",
       availabilityZone: "a",
       cidrBlock: "10.0.255.240/28",
       mapPublicIpOnLaunch: false,
@@ -110,7 +113,7 @@ export const devParameter: Parameter = {
   cloudshellSubnets: [
     {
       id: "CloudshellVpcPrivateSubnetA",
-      key: "private-a",
+      key: "private-cloudshell-a",
       availabilityZone: "a",
       cidrBlock: "172.16.1.0/24",
       mapPublicIpOnLaunch: false,
@@ -123,7 +126,7 @@ export const devParameter: Parameter = {
     },
     {
       id: "CloudshellVpcPrivateTgwSubnetA",
-      key: "private-a",
+      key: "private-tgw-a",
       availabilityZone: "a",
       cidrBlock: "172.16.255.240/28",
       mapPublicIpOnLaunch: false,
