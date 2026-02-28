@@ -208,6 +208,20 @@ export class Network extends Construct {
         subnetId: this.cloudshellSubnets["private-tgw-a"].attrSubnetId,
       },
     );
+    /**************
+    SecurityGroup
+    **************/
+    new ec2.CfnSecurityGroup(this, "CloudshellSg", {
+      groupName: "cloudshell-sg",
+      groupDescription: "For CloudShell in VPC",
+      vpcId: this.cloudshellVpc.attrVpcId,
+      tags: [
+        {
+          key: "Name",
+          value: "cloudshell-sg",
+        },
+      ],
+    });
   }
   /*
   ╔═══════════════════════════════════════════════════════════════════════╗
