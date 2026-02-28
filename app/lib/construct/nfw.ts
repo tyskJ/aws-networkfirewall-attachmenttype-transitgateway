@@ -23,6 +23,8 @@ export interface NfwProps extends cdk.StackProps {
 ╚═════════════════════════════════════════════════════════════════════════╝
 */
 export class Nfw extends Construct {
+  public readonly nfw: networkfirewall.CfnFirewall;
+
   constructor(scope: Construct, id: string, props: NfwProps) {
     super(scope, id);
 
@@ -103,7 +105,7 @@ export class Nfw extends Construct {
     /**************
     Firewall
     **************/
-    const nfw = new networkfirewall.CfnFirewall(this, "Nfw", {
+    this.nfw = new networkfirewall.CfnFirewall(this, "Nfw", {
       firewallName: "nfw",
       transitGatewayId: props.tgw.attrId,
       availabilityZoneMappings: [
@@ -137,7 +139,7 @@ export class Nfw extends Construct {
       retention: logs.RetentionDays.FIVE_DAYS,
     });
     new networkfirewall.CfnLoggingConfiguration(this, "NfwLogConfig", {
-      firewallArn: nfw.attrFirewallArn,
+      firewallArn: this.nfw.attrFirewallArn,
       loggingConfiguration: {
         logDestinationConfigs: [
           {
