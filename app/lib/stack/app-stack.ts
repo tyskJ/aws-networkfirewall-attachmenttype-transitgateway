@@ -3,6 +3,7 @@ import { Construct } from "constructs";
 import { Parameter } from "../../parameter";
 import { Network } from "../construct/vpc";
 import { Tgw } from "../construct/tgw";
+import { Nfw } from "../construct/nfw";
 
 export class AppStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: Parameter) {
@@ -34,6 +35,16 @@ export class AppStack extends cdk.Stack {
       cloudshellVpc: nw.cloudshellVpc,
       cloudshellSubnets: nw.cloudshellSubnets,
       cloudshellPrivateSubnetRtb: nw.cloudshellPrivateSubnetRtb,
+    });
+
+    /*****************
+    NetworkFirewall
+    *****************/
+    const nfw = new Nfw(this, "NfwConstruct", {
+      pseudo: pseudo,
+      tgw: tgw.tgw,
+      cloudshellVpc: nw.cloudshellVpc,
+      cloudshellSubnets: nw.cloudshellSubnets,
     });
   }
 }
