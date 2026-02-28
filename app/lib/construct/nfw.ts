@@ -52,7 +52,7 @@ export class Nfw extends Construct {
           rulesSource: {
             rulesSourceList: {
               generatedRulesType: "ALLOWLIST",
-              targets: [".amazon.com", "google.com"],
+              targets: [".amazon.com", ".google.com"],
               targetTypes: ["TLS_SNI", "HTTP_HOST"],
             },
           },
