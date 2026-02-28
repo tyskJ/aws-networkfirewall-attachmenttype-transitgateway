@@ -24,6 +24,8 @@ export interface TgwProps extends cdk.StackProps {
 */
 export class Tgw extends Construct {
   public readonly tgw: ec2.CfnTransitGateway;
+  public readonly ngwVpcAttachment: ec2.CfnTransitGatewayAttachment;
+  public readonly cloudshellVpcAttachment: ec2.CfnTransitGatewayAttachment;
 
   constructor(scope: Construct, id: string, props: TgwProps) {
     super(scope, id);
@@ -52,7 +54,7 @@ export class Tgw extends Construct {
     /**************
     TGW Attachment
     **************/
-    const ngwVpcAttachment = new ec2.CfnTransitGatewayAttachment(
+    this.ngwVpcAttachment = new ec2.CfnTransitGatewayAttachment(
       this,
       "NgwVpcAttachment",
       {
@@ -73,7 +75,7 @@ export class Tgw extends Construct {
         ],
       },
     );
-    const cloudshellVpcAttachment = new ec2.CfnTransitGatewayAttachment(
+    this.cloudshellVpcAttachment = new ec2.CfnTransitGatewayAttachment(
       this,
       "CloudShellVpcAttachment",
       {
