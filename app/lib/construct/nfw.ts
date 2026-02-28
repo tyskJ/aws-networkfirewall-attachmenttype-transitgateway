@@ -160,5 +160,20 @@ export class Nfw extends Construct {
       },
       enableMonitoringDashboard: true,
     });
+    /**************
+    Logs Insights Query
+    **************/
+    new logs.CfnQueryDefinition(this, "NfwAlertLogQuery", {
+      name: "NFW/alert-blocked-domain",
+      logGroupNames: [nfwAlertLogGroup.logGroupName],
+      queryLanguage: "CWLI",
+      queryString: [
+        "fields @timestamp, @logStream, event.src_ip, event.dest_ip, event.tls.sni",
+        '| filter event.src_ip == "XXX.XXX.XXX.XXX" and event.alert.action == "blocked" and ispresent(event.tls.sni)',
+        "| sort @timestamp desc",
+        "| dedup event.tls.sni",
+        "| limit 10",
+      ].join("\n"),
+    });
   }
 }
