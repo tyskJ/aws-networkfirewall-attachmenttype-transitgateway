@@ -80,4 +80,4 @@ AWS Network Firewall が Transit Gateway にネイティブ統合されたので
 リファレンス
 ---------------------------------------------------------------------
 * `AWS CDK Reference Documentation <https://docs.aws.amazon.com/cdk/api/v2/>`_
-* `aws-samples/aws-networkfirewall-cfn-templates - GitHub <https://github.com/aws-samples/aws-networkfirewall-cfn-templates/tree/main/transit-gateway-attached-firewall/manual-deployment-tgw-attached-firewall>`_
+* `aws-samples/aws-networkfirewall-cfn-templates - GitHub <https://github.com/aws-samples/aws-networkfirewall-cfn-templates/tree/main/transit-gateway-attached-firewall/pre-deployed-tgw-attached-firewall>`_
