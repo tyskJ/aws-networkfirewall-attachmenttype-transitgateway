@@ -23,13 +23,15 @@ export interface TgwProps extends cdk.StackProps {
 ╚═════════════════════════════════════════════════════════════════════════╝
 */
 export class Tgw extends Construct {
+  public readonly tgw: ec2.CfnTransitGateway;
+
   constructor(scope: Construct, id: string, props: TgwProps) {
     super(scope, id);
 
     /**************
     TGW
     **************/
-    const tgw = new ec2.CfnTransitGateway(this, "Tgw", {
+    this.tgw = new ec2.CfnTransitGateway(this, "Tgw", {
       amazonSideAsn: 64512,
       autoAcceptSharedAttachments: "disable",
       defaultRouteTableAssociation: "disable",
@@ -56,7 +58,7 @@ export class Tgw extends Construct {
       {
         vpcId: props.ngwVpc.attrVpcId,
         subnetIds: [props.ngwSubnets["private-tgw-a"].attrSubnetId],
-        transitGatewayId: tgw.attrId,
+        transitGatewayId: this.tgw.attrId,
         options: {
           ApplianceModeSupport: "disable",
           DnsSupport: "enable",
@@ -77,7 +79,7 @@ export class Tgw extends Construct {
       {
         vpcId: props.cloudshellVpc.attrVpcId,
         subnetIds: [props.cloudshellSubnets["private-tgw-a"].attrSubnetId],
-        transitGatewayId: tgw.attrId,
+        transitGatewayId: this.tgw.attrId,
         options: {
           ApplianceModeSupport: "disable",
           DnsSupport: "enable",
