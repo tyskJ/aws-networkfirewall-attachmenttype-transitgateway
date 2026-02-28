@@ -4,6 +4,7 @@ import { Parameter } from "../../parameter";
 import { Network } from "../construct/vpc";
 import { Tgw } from "../construct/tgw";
 import { Nfw } from "../construct/nfw";
+import { TgwRtb } from "../construct/tgw_rtb";
 
 export class AppStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: Parameter) {
@@ -45,6 +46,17 @@ export class AppStack extends cdk.Stack {
       tgw: tgw.tgw,
       cloudshellVpc: nw.cloudshellVpc,
       cloudshellSubnets: nw.cloudshellSubnets,
+    });
+
+    /*****************
+    TGW RTB
+    *****************/
+    const tgwRtb = new TgwRtb(this, "TgwRtbConstruct", {
+      tgw: tgw.tgw,
+      ngwVpcAttachment: tgw.ngwVpcAttachment,
+      cloudshellVpcAttachment: tgw.cloudshellVpcAttachment,
+      nfw: nfw.nfw,
+      cloudshellVpc: nw.cloudshellVpc,
     });
   }
 }
