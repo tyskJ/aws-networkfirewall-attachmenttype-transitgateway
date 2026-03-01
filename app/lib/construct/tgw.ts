@@ -103,11 +103,11 @@ export class Tgw extends Construct {
       routeTableId: props.ngwPublicSubnetRtb.attrRouteTableId,
       destinationCidrBlock: props.cloudshellVpc.cidrBlock,
       transitGatewayId: this.tgw.attrId,
-    });
+    }).addDependency(this.ngwVpcAttachment);
     new ec2.CfnRoute(this, "CloudShellSubnetToTgw", {
       routeTableId: props.cloudshellPrivateSubnetRtb.attrRouteTableId,
       destinationCidrBlock: "0.0.0.0/0",
       transitGatewayId: this.tgw.attrId,
-    });
+    }).addDependency(this.cloudshellVpcAttachment);
   }
 }
