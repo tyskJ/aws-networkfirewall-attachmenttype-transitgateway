@@ -132,11 +132,13 @@ export class Nfw extends Construct {
       deletionProtectionEnabled: false,
       logGroupName: "/nfw/alert",
       retention: logs.RetentionDays.FIVE_DAYS,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
     const nfwFlowLogGroup = new logs.LogGroup(this, "NfwFlowLogGroup", {
       deletionProtectionEnabled: false,
       logGroupName: "/nfw/flow",
       retention: logs.RetentionDays.FIVE_DAYS,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
     new networkfirewall.CfnLoggingConfiguration(this, "NfwLogConfig", {
       firewallArn: this.nfw.attrFirewallArn,
